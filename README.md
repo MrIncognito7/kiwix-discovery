@@ -221,17 +221,6 @@ Check `--help` for the supported options if a command differs in your local vers
 
 ### Evaluation results currently documented
 
-The existing evaluation uses 25 manually labelled queries with relevance judgements and reports results at *k* = 10:
-
-| Method | Precision@10 | Recall@10 | nDCG@10 | MRR |
-|---|---:|---:|---:|---:|
-| Baseline | 0.232 | 0.427 | 0.405 | 0.568 |
-| Intent | 0.296 | 0.472 | 0.537 | 0.805 |
-
-The project notes that intent ranking had higher nDCG on 18 queries, tied on 4, and lower on 3.
-
-**Interpretation:** these are preliminary results from a small, manually judged set—not a guarantee of performance on all searches. Some queries influenced tuning, and metadata fields are partly inferred. Re-run evaluation after building embeddings before reporting semantic or hybrid performance. Report the results actually measured by your current code.
-
 Full details are in [`eval/results.md`](eval/results.md), if present in your checkout.
 
 ## Limitations
@@ -253,18 +242,6 @@ Large or generated files are deliberately not included in this repository:
 - generated embedding arrays and indexes
 - caches, virtual environments, and local environment files
 
-The `.gitignore` excludes these paths. Keep a small, reproducible setup process documented here instead of committing large generated artefacts. Before publishing data or model files separately, check their respective licences and redistribution terms.
-
-## Hackathon demo checklist
-
-- [ ] Start the app and show a goal-based query.
-- [ ] Compare baseline and intent ranking for the same query.
-- [ ] Open a recommendation explanation and point out any missing/inferred metadata.
-- [ ] Build a library with a storage budget and export its manifest.
-- [ ] If embeddings are available, demonstrate semantic or hybrid ranking.
-- [ ] Explain the evaluation set size and limitations honestly.
-- [ ] Confirm the demo works from a clean clone using the README instructions.
-
 ## Tech stack
 
 - **Backend:** Python, FastAPI
@@ -273,14 +250,3 @@ The `.gitignore` excludes these paths. Keep a small, reproducible setup process 
 - **Frontend:** HTML, CSS, JavaScript
 - **Evaluation:** pytest and project-specific ranking scripts
 
-## Contributing
-
-Issues and pull requests are welcome. Please include reproduction steps for bugs and add tests when changing ranking or library-planning behaviour.
-
-## Licence
-
-Add or confirm the project's licence before inviting reuse. Do not assume the upstream Kiwix catalogue or model licence automatically determines the licence of this project.
-
----
-
-**Repository:** https://github.com/MrIncognito7/kiwix-discovery
