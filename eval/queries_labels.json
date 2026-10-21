@@ -1,0 +1,30 @@
+{
+ "_note": "Relevance judgments written from reading the catalogue (name + title), NOT from the ranker. 'pattern' is a regex over lowercase 'name title'; a result is relevant if it matches (and, when max_gb is set, its size <= max_gb). Review and edit these - they are your ground truth.",
+ "queries": [
+  {"q": "teach science to 12-year-olds", "pattern": "phet_(en|mul)_all|libretexts.org_en_k12|khanacademy_en_all|science in the bath|wikipedia_en_(chemistry|physics|biology|molcell)|vikidia_en"},
+  {"q": "learn French", "pattern": "wiktionary_fr|wikibooks_fr|vikidia_fr|french.stackexchange|lilote|wikisource_fr"},
+  {"q": "prepare for natural disasters", "pattern": "prepper|ready.gov|cd3wd|survivorlibrary|zimgit-water|zimgit-food|natural-disaster|fema"},
+  {"q": "medical resources under 2 GB", "pattern": "mdwiki|wikipedia_en_medicine|medicalsciences|wikem|hesperian|first.?aid", "max_gb": 2},
+  {"q": "programming for beginners", "pattern": "freecodecamp_en|devdocs_en_python|learnxinyminutes|python|javascript"},
+  {"q": "Spanish dictionary", "pattern": "wiktionary_es|spanish.stackexchange|diccionario"},
+  {"q": "first aid and emergency medicine", "pattern": "mdwiki|wikem|medicalsciences|hesperian|first.?aid|wikipedia_en_medicine"},
+  {"q": "high school math", "pattern": "khanacademy_en_all|libretexts.org_en_(math|k12|stats|calc)|wikipedia_en_mathematics|math.stackexchange"},
+  {"q": "chemistry for students", "pattern": "libretexts.org_en_chem|wikipedia_en_chemistry|ted_mul_chemistry|phet_(en|mul)_all|khanacademy_en_all|chemistry.stackexchange"},
+  {"q": "farming and gardening", "pattern": "gardenology|ted_mul_(farming|gardening|agriculture)|gardening.stackexchange|farm"},
+  {"q": "water purification and sanitation", "pattern": "zimgit-water|ted_mul_water|cd3wd|appropedia|survivorlibrary"},
+  {"q": "repair electronics at home", "pattern": "ifixit_en|electronics.stackexchange|raspberrypi|arduino|diy.stackexchange|restarters"},
+  {"q": "linux help", "pattern": "archlinux_en_all|askubuntu|unix.stackexchange|superuser|devdocs_en_bash|ubuntu"},
+  {"q": "TED talks about technology", "pattern": "ted_mul_(technology|ai|robot|computer|internet|software|design|engineering|innovation)"},
+  {"q": "world history", "pattern": "wikipedia_en_history|womenshistory|history.stackexchange|ted_mul_(history|archaeology)"},
+  {"q": "classic books to read", "pattern": "gutenberg_en_all|gutenberg_en_lcc|wikisource_en|literature.stackexchange|standardebooks"},
+  {"q": "travel guide and maps", "pattern": "wikivoyage_en_all|maps_en_all|travel.stackexchange"},
+  {"q": "cooking recipes", "pattern": "foss.cooking|based.cooking|grimgrains|publicdomainrecipes|cooking.stackexchange|zimgit-food"},
+  {"q": "learn English grammar", "pattern": "voa_learning_en|wiktionary_en|english.stackexchange|ell.stackexchange|wikibooks_en"},
+  {"q": "learn Hindi", "pattern": "wiktionary_hi|hindi.stackexchange|wikibooks_hi"},
+  {"q": "Arabic school resources for children", "pattern": "madrasa_ar|wikipedia_ar_for_schools"},
+  {"q": "physics simulations", "pattern": "phet_(en|mul)_all|libretexts.org_en_phys|wikipedia_en_physics|physics.stackexchange"},
+  {"q": "offline encyclopedia under 10 GB", "pattern": "wikipedia_en_all|vikidia_en|wikipedia_en_top|simple", "max_gb": 10},
+  {"q": "learn to code in JavaScript", "pattern": "devdocs_en_(javascript|node)|freecodecamp_en|javascript"},
+  {"q": "biology for high school", "pattern": "libretexts.org_en_bio|wikipedia_en_(biology|molcell)|khanacademy_en_all|biology.stackexchange|ted_mul_biology"}
+ ]
+}

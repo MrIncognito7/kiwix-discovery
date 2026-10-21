@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiwix Discovery — Find Knowledge by Intent</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+    <div class="logo">K</div>
+    <div>Kiwix Discovery<small>OPEN KNOWLEDGE, BETTER FOUND</small></div>
+  </div>
+  <nav aria-label="Main navigation">
+    <button class="navbtn active" data-view="discover">Discover</button>
+    <button class="navbtn" data-view="library">My Library <span id="nav-count"></span></button>
+    <button class="navbtn" data-view="evaluation">Evaluation</button>
+  </nav>
+  <div class="header-right"><span class="muted" style="font-size:11px">Offline-first discovery</span><div class="avatar">K</div></div>
+</header>
+
+<main>
+<section id="discover" class="view active">
+  <div class="hero">
+    <div class="eyebrow">Your intent. Our discovery.</div>
+    <h1>Find knowledge by <span>intent,</span><br>not by filename.</h1>
+    <p>Tell us what you're trying to learn, teach, build or prepare for.
+       Discover relevant offline knowledge without knowing what to search for.</p>
+  </div>
+
+  <div class="search-panel">
+    <div class="search-row">
+      <div class="search-icon">⌕</div>
+      <textarea id="intent" aria-label="Describe your goal"
+        placeholder="e.g. I need beginner-friendly science material to teach 12-year-olds offline..."></textarea>
+      <button id="search-btn" class="primary">Discover resources ↗</button>
+    </div>
+    <div class="muted" style="font-size:11px;margin-top:5px">TRY A GOAL</div>
+    <div class="chips">
+      <button class="chip" data-prompt="teach science to 12-year-olds">🧪 Teach science</button>
+      <button class="chip" data-prompt="learn French">🇫🇷 Learn French</button>
+      <button class="chip" data-prompt="prepare for natural disasters">🧭 Disaster preparedness</button>
+      <button class="chip" data-prompt="medical resources under 2 GB">💾 Medical under 2 GB</button>
+    </div>
+    <div id="parsed" class="parsed" aria-live="polite"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-top">Catalogue <span class="stat-icon">▤</span></div><strong id="stat-total">–</strong><small id="stat-total-note">Resources indexed</small></div>
+    <div class="stat"><div class="stat-top">Your collection <span class="stat-icon">♧</span></div><strong id="stat-saved">0</strong><small>Saved resources</small></div>
+    <div class="stat"><div class="stat-top">Storage planned <span class="stat-icon">◫</span></div><strong id="stat-size">0 MB</strong><small>Estimated collection size</small></div>
+  </div>
+
+  <div class="content-grid">
+    <aside class="sidebar">
+      <div class="side-head"><h3>Refine discovery</h3><span>☷</span></div>
+      <div class="field"><label for="mode">Ranking method</label>
+        <select id="mode">
+          <option value="hybrid">Hybrid (rules + MiniLM)</option>
+          <option value="intent">Intent (rules + BM25)</option>
+          <option value="baseline">Baseline (BM25 keywords)</option>
+          <option value="semantic">Semantic only (MiniLM)</option>
+        </select>
+      </div>
+      <div class="field"><label for="sort">Sort by</label>
+        <select id="sort"><option value="rank">Ranking order</option>
+          <option value="size">Smallest first</option><option value="new">Newest first</option>
+        </select>
+      </div>
+      <div class="filter-note">Filters below apply to the top results returned for your goal.</div>
+      <div class="field"><label for="subject">Subject</label>
+        <select id="subject"><option value="">All subjects</option></select>
+      </div>
+      <div class="field"><label for="language">Language</label>
+        <select id="language"><option value="">All languages</option></select>
+      </div>
+      <div class="field"><label for="updated">Last updated</label>
+        <select id="updated"><option value="">Any time</option></select>
+      </div>
+      <div class="field">
+        <label for="max-size">Maximum resource size</label>
+        <div class="range-label"><span>Up to</span><strong id="size-label">No limit</strong></div>
+        <input type="range" id="max-size" min="0" max="100" value="100">
+      </div>
+      <label class="checkline"><input id="known-size" type="checkbox"> Only known file sizes</label>
+      <label class="checkline"><input id="hide-stale" type="checkbox"> Hide stale resources</label>
+      <label class="checkline"><input id="no-limits" type="checkbox"> Hide results with limitations</label>
+      <button id="reset" class="reset">Reset filters ↺</button>
+    </aside>
+
+    <section class="results">
+      <div class="results-top">
+        <div><h2 id="results-title">Recommended for you</h2>
+          <p id="results-subtitle">Ranked around your goal</p></div>
+        <span id="result-count" class="muted" style="font-size:12px"></span>
+      </div>
+      <div class="result-banner">
+        <span>✦</span>
+        <div><strong>Transparent recommendations</strong><br>
+          Every result lists the signals that matched. Limitations are shown when metadata is missing, inferred or stale.</div>
+      </div>
+      <div id="cards" class="cards"></div>
+    </section>
+  </div>
+</section>
+
+<section id="library" class="view">
+  <div class="page-head"><div class="eyebrow">Your offline collection</div>
+    <h1 style="font-size:35px">My Library<span style="color:var(--purple)">.</span></h1>
+    <p>Plan your collection before downloading. Saved resources persist in this browser.</p></div>
+  <div class="library-summary">
+    <div class="stat"><div class="stat-top">Saved resources</div><strong id="lib-count">0</strong></div>
+    <div class="stat"><div class="stat-top">Estimated total size</div><strong id="lib-size">0 MB</strong></div>
+    <div class="stat"><div class="stat-top">Storage remaining</div><strong id="lib-remaining">5 GB</strong></div>
+  </div>
+  <div class="panel">
+    <h3>Storage budget planner</h3>
+    <p>Choose a maximum size for your planned collection.</p>
+    <div class="budget"><label for="budget">Storage budget (GB)</label>
+      <input type="number" min="0.1" max="10000" step="0.5" id="budget" value="5">
+      <button class="primary" id="save-budget">Update budget</button>
+    </div>
+    <div class="progress"><div id="budget-bar"></div></div>
+    <div id="budget-note" class="muted" style="font-size:12px">Your collection is within budget.</div>
+    <div class="build-box">
+      <div><strong>Build My Library</strong>
+        <p>Picks the most relevant resources for your current goal that fit the budget. It takes the best match that fits, uses the largest version under a 40% per-item cap, and discounts subjects already chosen to keep the collection varied.</p></div>
+      <button class="primary" id="build-library">✦ Build from my goal</button>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:20px">
+    <div class="results-top"><div><h3>Saved resources</h3><p>Review and manage your selection.</p></div>
+      <div class="btn-group">
+        <button id="export" class="secondary">Export manifest ↓</button>
+        <button id="export-sh" class="secondary">Download script ↓</button>
+      </div></div>
+    <div id="library-list"></div>
+  </div>
+</section>
+
+<section id="evaluation" class="view">
+  <div class="page-head"><div class="eyebrow">Measure, compare, improve</div>
+    <h1 style="font-size:35px">Ranking evaluation<span style="color:var(--purple)">.</span></h1>
+    <p>Offline comparison of the baseline (BM25 keywords) with the intent and MiniLM rankers on a fixed set of judged queries.</p>
+  </div>
+  <div id="eval-body"><div class="empty"><p class="muted">Loading the evaluation report…</p></div></div>
+</section>
+
+<footer><span>Kiwix Discovery · Hackathon prototype</span>
+  <span>Local catalogue snapshot · No cloud AI API required</span></footer>
+</main>
+</div>
+
+<div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <div class="modal-head"><div><div class="eyebrow">Resource details</div><h2 id="modal-title" style="margin-top:8px"></h2></div>
+      <button class="modal-close" id="modal-close" aria-label="Close details">✕</button></div>
+    <div id="modal-content" style="margin-top:18px"></div>
+  </div>
+</div>
+<div id="toast" class="toast" role="status"></div>
+
+<script src="script.js" defer></script>
+</body>
+</html>

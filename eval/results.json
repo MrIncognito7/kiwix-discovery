@@ -1,0 +1,298 @@
+{
+ "generated": "from eval/results.md",
+ "k": 10,
+ "queries": 25,
+ "methods": [
+  "baseline",
+  "intent",
+  "semantic",
+  "hybrid"
+ ],
+ "semantic_enabled": true,
+ "judgments": "eval/queries_labels.json",
+ "summary": {
+  "baseline": {
+   "p": 0.232,
+   "recall": 0.427,
+   "ndcg": 0.405,
+   "mrr": 0.568
+  },
+  "intent": {
+   "p": 0.296,
+   "recall": 0.472,
+   "ndcg": 0.537,
+   "mrr": 0.805
+  },
+  "semantic": {
+   "p": 0.244,
+   "recall": 0.336,
+   "ndcg": 0.381,
+   "mrr": 0.557
+  },
+  "hybrid": {
+   "p": 0.376,
+   "recall": 0.566,
+   "ndcg": 0.598,
+   "mrr": 0.772
+  }
+ },
+ "per_query": [
+  {
+   "q": "teach science to 12-year-olds",
+   "n_rel": 9,
+   "ndcg": {
+    "baseline": 0.34,
+    "intent": 0.35,
+    "semantic": 0.0,
+    "hybrid": 0.35
+   }
+  },
+  {
+   "q": "learn French",
+   "n_rel": 6,
+   "ndcg": {
+    "baseline": 0.26,
+    "intent": 0.39,
+    "semantic": 0.37,
+    "hybrid": 0.57
+   }
+  },
+  {
+   "q": "prepare for natural disasters",
+   "n_rel": 13,
+   "ndcg": {
+    "baseline": 0.34,
+    "intent": 0.65,
+    "semantic": 0.62,
+    "hybrid": 0.77
+   }
+  },
+  {
+   "q": "medical resources under 2 GB",
+   "n_rel": 3,
+   "ndcg": {
+    "baseline": 0.16,
+    "intent": 0.79,
+    "semantic": 0.23,
+    "hybrid": 0.34
+   }
+  },
+  {
+   "q": "programming for beginners",
+   "n_rel": 26,
+   "ndcg": {
+    "baseline": 0.14,
+    "intent": 0.22,
+    "semantic": 0.31,
+    "hybrid": 0.42
+   }
+  },
+  {
+   "q": "Spanish dictionary",
+   "n_rel": 2,
+   "ndcg": {
+    "baseline": 0.69,
+    "intent": 0.61,
+    "semantic": 0.61,
+    "hybrid": 0.79
+   }
+  },
+  {
+   "q": "first aid and emergency medicine",
+   "n_rel": 4,
+   "ndcg": {
+    "baseline": 0.39,
+    "intent": 0.64,
+    "semantic": 0.39,
+    "hybrid": 0.51
+   }
+  },
+  {
+   "q": "high school math",
+   "n_rel": 6,
+   "ndcg": {
+    "baseline": 0.0,
+    "intent": 0.11,
+    "semantic": 0.0,
+    "hybrid": 0.0
+   }
+  },
+  {
+   "q": "chemistry for students",
+   "n_rel": 7,
+   "ndcg": {
+    "baseline": 0.79,
+    "intent": 0.7,
+    "semantic": 0.09,
+    "hybrid": 0.7
+   }
+  },
+  {
+   "q": "farming and gardening",
+   "n_rel": 5,
+   "ndcg": {
+    "baseline": 0.72,
+    "intent": 0.97,
+    "semantic": 1.0,
+    "hybrid": 1.0
+   }
+  },
+  {
+   "q": "water purification and sanitation",
+   "n_rel": 5,
+   "ndcg": {
+    "baseline": 0.55,
+    "intent": 0.55,
+    "semantic": 0.45,
+    "hybrid": 0.55
+   }
+  },
+  {
+   "q": "repair electronics at home",
+   "n_rel": 6,
+   "ndcg": {
+    "baseline": 0.44,
+    "intent": 0.61,
+    "semantic": 0.4,
+    "hybrid": 0.68
+   }
+  },
+  {
+   "q": "linux help",
+   "n_rel": 7,
+   "ndcg": {
+    "baseline": 0.32,
+    "intent": 0.48,
+    "semantic": 0.4,
+    "hybrid": 0.41
+   }
+  },
+  {
+   "q": "TED talks about technology",
+   "n_rel": 10,
+   "ndcg": {
+    "baseline": 0.22,
+    "intent": 0.22,
+    "semantic": 0.57,
+    "hybrid": 0.6
+   }
+  },
+  {
+   "q": "world history",
+   "n_rel": 5,
+   "ndcg": {
+    "baseline": 0.47,
+    "intent": 0.53,
+    "semantic": 0.0,
+    "hybrid": 0.53
+   }
+  },
+  {
+   "q": "classic books to read",
+   "n_rel": 42,
+   "ndcg": {
+    "baseline": 0.08,
+    "intent": 0.91,
+    "semantic": 0.06,
+    "hybrid": 0.79
+   }
+  },
+  {
+   "q": "travel guide and maps",
+   "n_rel": 3,
+   "ndcg": {
+    "baseline": 0.67,
+    "intent": 0.77,
+    "semantic": 0.7,
+    "hybrid": 0.95
+   }
+  },
+  {
+   "q": "cooking recipes",
+   "n_rel": 6,
+   "ndcg": {
+    "baseline": 0.99,
+    "intent": 0.99,
+    "semantic": 0.96,
+    "hybrid": 0.97
+   }
+  },
+  {
+   "q": "learn English grammar",
+   "n_rel": 6,
+   "ndcg": {
+    "baseline": 0.62,
+    "intent": 0.34,
+    "semantic": 0.15,
+    "hybrid": 0.63
+   }
+  },
+  {
+   "q": "learn Hindi",
+   "n_rel": 3,
+   "ndcg": {
+    "baseline": 0.44,
+    "intent": 0.47,
+    "semantic": 0.3,
+    "hybrid": 0.63
+   }
+  },
+  {
+   "q": "Arabic school resources for children",
+   "n_rel": 15,
+   "ndcg": {
+    "baseline": 0.0,
+    "intent": 0.0,
+    "semantic": 0.79,
+    "hybrid": 0.57
+   }
+  },
+  {
+   "q": "physics simulations",
+   "n_rel": 5,
+   "ndcg": {
+    "baseline": 0.65,
+    "intent": 0.84,
+    "semantic": 0.0,
+    "hybrid": 0.79
+   }
+  },
+  {
+   "q": "offline encyclopedia under 10 GB",
+   "n_rel": 5,
+   "ndcg": {
+    "baseline": 0.1,
+    "intent": 0.11,
+    "semantic": 0.0,
+    "hybrid": 0.1
+   }
+  },
+  {
+   "q": "learn to code in JavaScript",
+   "n_rel": 19,
+   "ndcg": {
+    "baseline": 0.14,
+    "intent": 0.56,
+    "semantic": 1.0,
+    "hybrid": 0.56
+   }
+  },
+  {
+   "q": "biology for high school",
+   "n_rel": 5,
+   "ndcg": {
+    "baseline": 0.58,
+    "intent": 0.6,
+    "semantic": 0.13,
+    "hybrid": 0.73
+   }
+  }
+ ],
+ "vs_baseline": {
+  "method": "hybrid",
+  "better": 20,
+  "tied": 2,
+  "worse": 3
+ },
+ "note": "Parsed from the existing results.md; re-run python eval/run_eval.py to regenerate with precision per query."
+}
