@@ -1,6 +1,0 @@
-built 54855 rows
-baseline      median     191 ms   max     192 ms
-intent        median     286 ms   max     344 ms
-library(5GB)  median    1056 ms   max    1238 ms
-top intent results on big catalogue: ['PhET Interactive Simulati', 'PhET Interactive Simulati', 'PhET Interactive Simulati', 'PhET Interactive Simulati', 'PhET Interactive Simulati']
-results with missing-metadata limitation notes: 2 of 20

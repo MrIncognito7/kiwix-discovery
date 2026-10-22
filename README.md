@@ -1,13 +1,15 @@
 # Kiwix Discovery
+
 ### Find knowledge by intent, not by filename.
 
-Kiwix Discovery helps people find useful offline learning resources by describing **what they want to accomplish**—rather than searching only by title or filename.
+Kiwix Discovery helps people find useful offline learning resources by describing **what they want to accomplish**, rather than searching only by title or filename.
 
 For example:
-- “Teach science to 12-year-olds”
-- “Learn French”
-- “Prepare for disasters”
-- “Build a library of medical resources within 5 GB”
+
+- "Teach science to 12-year-olds"
+- "Learn French"
+- "Prepare for disasters"
+- "Build a library of medical resources within 5 GB"
 
 It searches a local snapshot of the Kiwix catalogue, ranks matching resources, explains recommendation signals, and helps build a storage-aware personal library.
 
@@ -15,86 +17,31 @@ It searches a local snapshot of the Kiwix catalogue, ranks matching resources, e
 
 ---
 
-## Why this matters
-
-Offline knowledge is valuable when internet access is slow, expensive, unreliable, or unavailable. But a large catalogue can be difficult to navigate when someone knows their learning goal but not the name of the resource they need.
-
-Kiwix Discovery bridges that gap with intent-aware discovery and storage-aware planning.
-
-## Features
-
-- **Goal-oriented search:** describe a learning or information need in natural language.
-- **Multiple ranking modes:** BM25 baseline, rule-based intent ranking, semantic ranking, and hybrid ranking when embeddings are available.
-- **Recommendation explanations:** see which signals contributed to a result and where metadata is missing or inferred.
-- **Storage-aware “My Library”:** assemble a selection of resources under a storage budget.
-- **Catalogue metadata auditing:** flag missing fields and possible duplicates.
-- **Exportable library manifest:** generate a manifest and download script for a planned library.
-- **Evaluation tools:** compare ranking approaches against a small set of manually labelled queries.
-
-## How it works
-
-1. **Catalogue ingestion:** import the public Kiwix OPDS catalogue into SQLite.
-2. **Metadata enrichment:** derive helpful fields such as subject, audience, freshness, and resource variants. Derived fields are heuristic and should not be mistaken for authoritative catalogue metadata.
-3. **Candidate retrieval:** use SQLite FTS5/BM25 and relevant catalogue candidates.
-4. **Intent ranking:** infer signals such as subject, audience, language, and size limit, then score and filter candidates.
-5. **Optional semantic ranking:** encode resource text and queries with a multilingual SentenceTransformer model and compare their embeddings.
-6. **Library planning:** select relevant resources while considering storage limits and subject diversity.
-
-### Ranking modes
-
-| Mode | What it does |
-|---|---|
-| `baseline` | BM25 text search using SQLite FTS5 |
-| `intent` | BM25 plus rule-based intent signals and filters |
-| `semantic` | Nearest-neighbour ranking using precomputed MiniLM embeddings |
-| `hybrid` | Combines intent ranking with a semantic similarity signal |
-
-Semantic and hybrid modes require embeddings built with the configured model. Without embeddings, the application can still use its non-semantic modes.
-
-## Project structure
-
-```text
-kiwix-discovery/
-├── app.py                    # FastAPI app and search/library endpoints
-├── embedder.py               # SentenceTransformer model loading
-├── requirements.txt          # Python dependencies
-├── static/
-│   └── index.html             # Frontend
-├── scripts/
-│   ├── ingest_catalog.py      # OPDS XML -> SQLite
-│   ├── enrich_catalog.py      # Derived metadata and audit fields
-│   ├── build_embeddings.py    # Build semantic embeddings
-│   ├── find_duplicates.py     # Duplicate/variant analysis
-│   ├── manifest.py            # Export a library manifest
-│   └── stress_test.py         # Larger-catalogue stress test
-├── eval/
-│   ├── queries_labels.json    # Manually labelled evaluation queries
-│   └── run_eval.py             # Compare ranking methods
-├── tests/
-│   └── test_core.py            # Unit tests
-└── data/                       # Local/generated files; not committed
-```
-
-The `data/` directory is intentionally excluded from Git because it can contain the local catalogue database, generated embeddings, and downloaded model files.
-
----
-
 ## Quick start
-
-### Requirements
-
-- Python 3.10 or newer is recommended.
-- Internet access for initial dependency/model installation and catalogue download, if needed.
-- Enough disk space for the catalogue, model, and generated embeddings when enabling semantic search.
-
-### 1. Clone the repository
 
 ```bash
 git clone https://github.com/MrIncognito7/kiwix-discovery.git
 cd kiwix-discovery
+python setup.py
 ```
 
-### 2. Create a virtual environment
+Then activate the environment and start the server:
+
+```bash
+source .venv/bin/activate        # Windows PowerShell: .venv\Scripts\Activate.ps1
+uvicorn app:app --reload
+```
+
+Open **http://127.0.0.1:8000**. If the port is occupied, add `--port 8001`.
+
+`setup.py` creates a virtual environment, installs dependencies, downloads the public Kiwix catalogue, builds the local database and builds the semantic embeddings (so all four ranking modes work). The first run downloads a small model and can take a few minutes. It is safe to re-run: finished steps are skipped. To rebuild, delete `data/catalog_enriched.db` (catalogue) or `data/.embeddings_built` (embeddings) and run it again.
+
+Requirements: Python 3.10+ and internet access for the first run.
+
+<details>
+<summary><strong>Manual setup (step by step)</strong></summary>
+
+### 1. Create a virtual environment
 
 Linux/macOS:
 
@@ -110,34 +57,18 @@ py -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
-### 3. Install dependencies
+### 2. Install dependencies
 
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-If you only want to try the non-semantic modes, you may not need to download the model or generate embeddings. Follow the data setup below first.
+### 3. Set up the catalogue data
 
-### 4. Set up the catalogue data
+**Option A: you already have the `data/` folder.** Copy it into the repository root and check that `data/catalog_enriched.db` exists. For semantic or hybrid ranking, the embedding files and model metadata must also be present and match the configured model. Do not commit the data folder unless you have checked file sizes and redistribution licences.
 
-Choose **one** of the following paths.
-
-#### Option A — You already have the `data/` folder
-
-Copy your existing `data/` folder into the repository root. Check that the expected catalogue database exists:
-
-```text
-data/catalog_enriched.db
-```
-
-If you want semantic or hybrid ranking, also make sure the embedding files and model metadata produced by your embedding build step are present and correspond to the configured model.
-
-Do not commit the data folder unless you have checked the file sizes and redistribution licences.
-
-#### Option B — You do not have the `data/` folder
-
-Download the public Kiwix OPDS catalogue and build the local SQLite database:
+**Option B: build it from the public catalogue.**
 
 ```bash
 mkdir -p data
@@ -145,43 +76,93 @@ curl --compressed "https://opds.library.kiwix.org/catalog/v2/entries?count=-1" -
 python scripts/ingest_catalog.py catalog.xml catalog.db
 python scripts/enrich_catalog.py catalog.db
 cp catalog.db data/catalog_enriched.db
-```
-
-These commands follow the ingestion flow documented for this project. If the upstream catalogue format or scripts change, consult the script help and project issues before continuing. The downloaded catalogue is a snapshot and may not include the newest entries.
-
-Remove the temporary `catalog.xml` and `catalog.db` files when you no longer need them:
-
-```bash
 rm -f catalog.xml catalog.db
 ```
 
-On Windows, delete those temporary files using File Explorer or PowerShell.
+On Windows, delete the temporary `catalog.xml` and `catalog.db` files with File Explorer or PowerShell. The downloaded catalogue is a snapshot and may not include the newest entries.
 
-### 5. Optional — Enable semantic and hybrid ranking
-
-Build embeddings once:
+### 4. Optional: enable semantic and hybrid ranking
 
 ```bash
 python scripts/build_embeddings.py
 ```
 
-The first run may download the configured SentenceTransformer model and can take time depending on your internet connection and hardware. Generated model files and embeddings are stored locally under `data/`.
+The first run may download the configured SentenceTransformer model and can take time depending on your connection and hardware. Model files and embeddings are stored locally under `data/`.
 
-Then start the application:
+### 5. Start the app
 
 ```bash
 uvicorn app:app --reload
 ```
 
-Open **http://127.0.0.1:8000** in your browser.
+Open http://127.0.0.1:8000. If the port is occupied, add `--port 8001`.
 
-If port 8000 is already occupied, use another port:
+</details>
 
-```bash
-uvicorn app:app --reload --port 8001
+---
+
+## Why this matters
+
+Offline knowledge is valuable when internet access is slow, expensive, unreliable, or unavailable. But a large catalogue can be difficult to navigate when someone knows their learning goal but not the name of the resource they need.
+
+Kiwix Discovery bridges that gap with intent-aware discovery and storage-aware planning.
+
+## Features
+
+- **Goal-oriented search:** describe a learning or information need in natural language.
+- **Multiple ranking modes:** BM25 baseline, rule-based intent ranking, semantic ranking, and hybrid ranking when embeddings are available.
+- **Recommendation explanations:** see which signals contributed to a result and where metadata is missing or inferred.
+- **Storage-aware "My Library":** assemble a selection of resources under a storage budget.
+- **Catalogue metadata auditing:** flag missing fields and possible duplicates.
+- **Exportable library manifest:** generate a manifest and download script for a planned library.
+- **Evaluation tools:** compare ranking approaches against a small set of manually labelled queries.
+
+## How it works
+
+1. **Catalogue ingestion:** import the public Kiwix OPDS catalogue into SQLite.
+2. **Metadata enrichment:** derive helpful fields such as subject, audience, freshness, and resource variants. Derived fields are heuristic and should not be mistaken for authoritative catalogue metadata.
+3. **Candidate retrieval:** use SQLite FTS5/BM25 and relevant catalogue candidates.
+4. **Intent ranking:** infer signals such as subject, audience, language, and size limit, then score and filter candidates.
+5. **Optional semantic ranking:** encode resource text and queries with a multilingual SentenceTransformer model and compare their embeddings.
+6. **Library planning:** select relevant resources while considering storage limits and subject diversity.
+
+### Ranking modes
+
+| Mode       | What it does                                                  |
+|------------|---------------------------------------------------------------|
+| `baseline` | BM25 text search using SQLite FTS5                            |
+| `intent`   | BM25 plus rule-based intent signals and filters               |
+| `semantic` | Nearest-neighbour ranking using precomputed MiniLM embeddings |
+| `hybrid`   | Combines intent ranking with a semantic similarity signal     |
+
+Semantic and hybrid modes require embeddings built with the configured model. Without embeddings, the application can still use its non-semantic modes.
+
+## Project structure
+
+```
+kiwix-discovery/
+├── setup.py                  # One-command setup
+├── app.py                    # FastAPI app and search/library endpoints
+├── embedder.py               # SentenceTransformer model loading
+├── requirements.txt          # Python dependencies
+├── static/
+│   └── index.html            # Frontend
+├── scripts/
+│   ├── ingest_catalog.py     # OPDS XML -> SQLite
+│   ├── enrich_catalog.py     # Derived metadata and audit fields
+│   ├── build_embeddings.py   # Build semantic embeddings
+│   ├── find_duplicates.py    # Duplicate/variant analysis
+│   ├── manifest.py           # Export a library manifest
+│   └── stress_test.py        # Larger-catalogue stress test
+├── eval/
+│   ├── queries_labels.json   # Manually labelled evaluation queries
+│   └── run_eval.py           # Compare ranking methods
+├── tests/
+│   └── test_core.py          # Unit tests
+└── data/                     # Local/generated files; not committed
 ```
 
-Then open **http://127.0.0.1:8001**.
+The `data/` directory is intentionally excluded from Git because it can contain the local catalogue database, generated embeddings, and downloaded model files.
 
 ---
 
@@ -231,7 +212,7 @@ Full details are in [`eval/results.md`](eval/results.md), if present in your che
 - The intent parser supports a limited set of language names and English-language rules. Multilingual semantic matching is partial and depends on the model and query.
 - The library builder is a heuristic, not an optimal knapsack solver.
 - Semantic similarity settings are hand-picked and may need calibration for different queries.
-- Catalogue data can become stale; re-ingest it periodically.
+- Catalogue data can become stale; re-ingest it periodically (delete `data/catalog_enriched.db` and re-run `python setup.py`).
 
 ## Data, models, and GitHub
 
@@ -249,4 +230,3 @@ Large or generated files are deliberately not included in this repository:
 - **Semantic ranking:** SentenceTransformers and precomputed embeddings (optional)
 - **Frontend:** HTML, CSS, JavaScript
 - **Evaluation:** pytest and project-specific ranking scripts
-
